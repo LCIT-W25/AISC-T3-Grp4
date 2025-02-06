@@ -3,10 +3,10 @@ name: Text Processing Tests
 on:
   push:
     branches:
-      - test  # Runs tests when pushing to the 'test' branch
+      - dev  # Runs tests when pushing to the 'test' branch
   pull_request:
     branches:
-      - main  # Runs tests on PRs to 'main'
+      - dev  # Runs tests on PRs to 'main'
 
 jobs:
   test:
