@@ -1,0 +1,15 @@
+#Ignore models folder
+models/
+
+#Ignore Python cache
+__pycache__/
+*.pyc
+*.pyo
+
+# Ignore virtual environment
+yelp_env/
+env/
+
+#Ignore log files
+logs/
+*.log
