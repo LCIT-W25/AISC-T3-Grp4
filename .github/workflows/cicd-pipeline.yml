@@ -1,1 +1,97 @@
+name: CI/CD Pipeline for Sentiment & Image Classification
+
+on:
+  push:
+    branches:
+      - test  # CI/CD runs when pushing to 'test' branch
+
+jobs:
+  test:
+    name: Run Unit Tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v3
+        with:
+          python-version: 3.9
+
+      - name: Install Dependencies
+        run: |
+          pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pytest tensorflow joblib numpy streamlit pillow
+
+      - name: Run Tests
+        run: pytest tests/
+
+  docker:
+    name: Build & Push Docker Images
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Build & Push Sentiment Models (GRU & RNN)
+        run: |
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/gru-model:latest -f docker/Dockerfile.gru .
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/rnn-model:latest -f docker/Dockerfile.rnn .
+          docker push ${{ secrets.DOCKER_USERNAME }}/gru-model:latest
+          docker push ${{ secrets.DOCKER_USERNAME }}/rnn-model:latest
+
+      - name: Build & Push Image Classification Models
+        run: |
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/mobilenet-model:latest -f docker/Dockerfile.mobilenet .
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/vgg16-model:latest -f docker/Dockerfile.vgg16 .
+          docker push ${{ secrets.DOCKER_USERNAME }}/mobilenet-model:latest
+          docker push ${{ secrets.DOCKER_USERNAME }}/vgg16-model:latest
+
+      - name: Build & Push Streamlit UI
+        run: |
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/streamlit-ui:latest -f docker/Dockerfile.ui .
+          docker push ${{ secrets.DOCKER_USERNAME }}/streamlit-ui:latest
+
+  deploy:
+    name: Deploy to VM
+    needs: docker
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to Virtual Machine
+        uses: appleboy/ssh-action@v0.1.6
+        with:
+          host: ${{ secrets.VM_HOST }}
+          username: ${{ secrets.VM_USERNAME }}
+          password: ${{ secrets.VM_PASSWORD }}
+          script: |
+            docker pull ${{ secrets.DOCKER_USERNAME }}/gru-model:latest
+            docker pull ${{ secrets.DOCKER_USERNAME }}/rnn-model:latest
+            docker pull ${{ secrets.DOCKER_USERNAME }}/mobilenet-model:latest
+            docker pull ${{ secrets.DOCKER_USERNAME }}/vgg16-model:latest
+            docker pull ${{ secrets.DOCKER_USERNAME }}/streamlit-ui:latest
+
+            docker stop gru-api || true
+            docker stop rnn-api || true
+            docker stop mobilenet-api || true
+            docker stop vgg16-api || true
+            docker stop streamlit-ui || true
+            docker rm gru-api || true
+            docker rm rnn-api || true
+            docker rm mobilenet-api || true
+            docker rm vgg16-api || true
+            docker rm streamlit-ui || true
+
+            docker run -d -p 5000:5000 --name gru-api ${{ secrets.DOCKER_USERNAME }}/gru-model:latest
+            docker run -d -p 5001:5001 --name rnn-api ${{ secrets.DOCKER_USERNAME }}/rnn-model:latest
+            docker run -d -p 5002:5002 --name mobilenet-api ${{ secrets.DOCKER_USERNAME }}/mobilenet-model:latest
+            docker run -d -p 5003:5003 --name vgg16-api ${{ secrets.DOCKER_USERNAME }}/vgg16-model:latest
+            docker run -d -p 8501:8501 --name streamlit-ui ${{ secrets.DOCKER_USERNAME }}/streamlit-ui:latest
 
