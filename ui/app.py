@@ -114,7 +114,7 @@ if app_mode == "Image Classification":
     st.title(" Image Classification with RNN & VGG16(Transfer Learning)")
     st.write("Upload an image to predict its class.")
 
-    model_choice = st.selectbox("Select a model:", ["MobileNetV2", "VGG16"])
+    model_choice = st.selectbox("Select a model:", ["RNNCLASSIFIER", "VGG16CLASSIFIER"])
 
     # Load Image Classification Models
     @st.cache_resource

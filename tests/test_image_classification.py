@@ -12,7 +12,7 @@ MODELS_DIR = BASE_DIR / "models"  # Define models directory
 
 # Load models with path validation
 mobilenet_path = MODELS_DIR / "MobileNetV2.h5"
-vgg16_path = MODELS_DIR / "VGG16_model.h5"
+vgg16_path = MODELS_DIR / "vgg16_model.h5"
 
 if not mobilenet_path.exists():
     raise FileNotFoundError(f"MobileNetV2 Model not found: {mobilenet_path}")
