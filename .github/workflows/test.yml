@@ -26,8 +26,11 @@ jobs:
           python -m venv venv
           source venv/bin/activate
           python -m pip install --upgrade pip  # Upgrade pip to the latest version
-          pip install -r requirements.txt --index-url=https://pypi.org/simple -v  # Add verbose flag
-          pip install pytest tensorflow==2.10.0 -v  # Ensure pytest and TensorFlow are installed
+          pip install -r requirements.txt --index-url=https://pypi.org/simple -v || pip install -r requirements.txt --index-url=https://pypi.org/simple -v  # Retry if it fails
+          pip install pytest tensorflow==2.10.0 -v || pip install pytest tensorflow==2.10.0 -v  # Retry if it fails
+
+    - name: Ensure models directory exists
+      run: mkdir -p models
 
     - name: Download models from GitHub releases
       run: |
