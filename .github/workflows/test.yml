@@ -30,7 +30,7 @@ jobs:
     - name: Download models from GitHub Releases
       run: |
         wget -O models/gru_model.h5 "https://github.com/LCIT-W25/AISC-T3-Grp4/releases/download/vgg_rnn_gru/best_hyperparameter_gru_model.h5"
-        wget -O models/vgg_model.h5 "https://github.com/LCIT-W25/AISC-T3-Grp4/releases/download/vgg_rnn_gru/VGG16CLASSIFIER_model.h5"
+        wget -O models/vgg_model.h5 "https://github.com/LCIT-W25/AISC-T3-Grp4/releases/download/vgg_rnn_gru/VGG16CLASSIFIER.h5"
         wget -O models/rnn_model.h5 "https://github.com/LCIT-W25/AISC-T3-Grp4/releases/download/vgg_rnn_gru/best_rnn_model.h5"
 
     - name: Run all unit tests
