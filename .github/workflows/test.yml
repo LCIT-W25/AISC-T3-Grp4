@@ -3,10 +3,10 @@ name: All Model Unit Tests
 on:
   push:
     branches:
-      - test
+      - dev
   pull_request:
     branches:
-      - test
+      - dev
 
 jobs:
   test:
