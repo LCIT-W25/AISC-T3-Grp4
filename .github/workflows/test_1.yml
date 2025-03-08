@@ -1,4 +1,4 @@
-name: Model Unit Tests
+name: All Model Unit Tests
 
 on:
   push:
