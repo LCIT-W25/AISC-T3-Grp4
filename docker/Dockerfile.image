@@ -1,0 +1,12 @@
+FROM python:3.9
+
+WORKDIR /app
+
+COPY models/ models/
+COPY docker/image_api.py .
+
+RUN pip install --no-cache-dir flask tensorflow numpy pillow
+
+EXPOSE 5001
+
+CMD ["python", "image_api.py"]
