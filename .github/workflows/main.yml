@@ -28,7 +28,7 @@ jobs:
 
       - name: Validate Model
         run: |
-          python -c "from tensorflow.keras.models import load_model; model = load_model('models/model.h5'); print('Model loaded successfully!')"
+          python -c "from tensorflow.keras.models import load_model; model = load_model('models/MobileNetV2.h5'); print('Model loaded successfully!')"
 
   deploy:
     needs: validate  # Ensure the deploy job runs only if the validate job succeeds
