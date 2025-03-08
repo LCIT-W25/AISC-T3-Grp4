@@ -34,6 +34,4 @@ jobs:
         wget -O models/rnn_model.h5 "https://github.com/LCIT-W25/AISC-T3-Grp4/releases/download/vgg_rnn_gru/best_rnn_model.h5"
 
     - name: Run all unit tests
-      run: |
-        source venv/bin/activate
-        pytest tests/  --disable-warnings
+      run: pytest   --disable-warnings
