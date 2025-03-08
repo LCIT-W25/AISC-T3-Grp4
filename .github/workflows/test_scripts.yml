@@ -3,17 +3,17 @@ name: Run Unit Tests
 on:
   push:
     branches:
-      - test
+      - test  # This will trigger the workflow when you push to 'test' branch
   pull_request:
     branches:
-      - test
+      - test  # This will trigger the workflow on PR to 'test' branch
 
 jobs:
   test:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout repository
+    - name: Checkout code
       uses: actions/checkout@v4
 
     - name: Set up Python
@@ -27,12 +27,7 @@ jobs:
         source venv/bin/activate
         pip install -r requirements.txt
 
-    - name: Check test collection (Show tests discovered)
+    - name: Run unit tests
       run: |
         source venv/bin/activate
-        pytest --collect-only -v  # Will list all tests detected
-
-    - name: Run all unit tests
-      run: |
-        source venv/bin/activate
-        pytest tests/ -s -v --disable-warnings
+        pytest tests/ -s -v  # Run tests in the 'tests/' folder
