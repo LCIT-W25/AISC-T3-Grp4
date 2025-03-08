@@ -26,7 +26,7 @@ jobs:
         python -m venv venv
         source venv/bin/activate
         pip install -r requirements.txt
-        pip install pytest tensorflow  # Ensure pytest and TensorFlow are installed
+        pip install pytest tensorflow==2.10.0  # Ensure pytest and TensorFlow are installed
 
     - name: Download models from GitHub Releases
       run: |
