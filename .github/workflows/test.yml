@@ -30,7 +30,7 @@ jobs:
           pip install -r requirements.txt --index-url=https://pypi.org/simple # Add verbose flag
           pip install pytest tensorflow==2.10.0 -v  # Ensure pytest and TensorFlow are installed
 
-    - name: Download models from GitHub Releases
+    - name: Download models from GitHub releases
       run: |
         wget -O models/gru_model.h5 "https://github.com/LCIT-W25/AISC-T3-Grp4/releases/download/vgg_rnn_gru/best_hyperparameter_gru_model.h5"
         wget -O models/vgg_model.h5 "https://github.com/LCIT-W25/AISC-T3-Grp4/releases/download/vgg_rnn_gru/VGG16CLASSIFIER.h5"
