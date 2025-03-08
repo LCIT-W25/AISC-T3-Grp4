@@ -21,13 +21,12 @@ jobs:
       with:
         python-version: '3.10'
       
-
     - name: Install dependencies
       run: |
           python -m venv venv
           source venv/bin/activate
           python -m pip install --upgrade pip  # Upgrade pip to the latest version
-          pip install -r requirements.txt --index-url=https://pypi.org/simple # Add verbose flag
+          pip install -r requirements.txt --index-url=https://pypi.org/simple -v  # Add verbose flag
           pip install pytest tensorflow==2.10.0 -v  # Ensure pytest and TensorFlow are installed
 
     - name: Download models from GitHub releases
