@@ -9,8 +9,10 @@ import nltk
 
 # Download necessary NLTK data
 nltk.download('punkt')
-nltk.download('wordnet')
 nltk.download('stopwords')
+nltk.download('wordnet')
+nltk.download('punkt_tab')
+
 
 # Functions from your main code
 def to_lowercase(text):
