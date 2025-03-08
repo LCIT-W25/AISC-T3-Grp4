@@ -26,6 +26,7 @@ jobs:
         python -m venv venv
         source venv/bin/activate
         pip install -r requirements.txt
+        python -m nltk.downloader punkt_tab
 
     - name: Download models from GitHub Releases
       run: |
