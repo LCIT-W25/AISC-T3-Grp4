@@ -1,0 +1,39 @@
+name: Model Unit Tests
+
+on:
+  push:
+    branches:
+      - test
+  pull_request:
+    branches:
+      - test
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.10'
+
+    - name: Install dependencies
+      run: |
+        python -m venv venv
+        source venv/bin/activate
+        pip install -r requirements.txt
+
+    - name: Download models from GitHub Releases
+      run: |
+        wget -O models/vgg_model.h5 "https://github.com/rutul_7802/AISC-T3-Grp4/releases/download/vgg_rnn_gru/vgg_model.h5"
+        wget -O models/rnn_model.h5 "https://github.com/rutul7802/AISC-T3-Grp4/releases/download/vgg_rnn_gru/rnn_model.h5"
+        wget -O models/best_hyperparameter_gru_model.h5 "https://github.com/rutul7802/AISC-T3-Grp4/releases/download/vgg_rnn_gru/best_hyperparameter_gru_model.h5"
+
+    - name: Run unit tests
+      run: |
+        source venv/bin/activate
+        pytest tests/
