@@ -1,0 +1,38 @@
+name: Run Unit Tests
+
+on:
+  push:
+    branches:
+      - test
+  pull_request:
+    branches:
+      - test
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.10'
+
+    - name: Install dependencies
+      run: |
+        python -m venv venv
+        source venv/bin/activate
+        pip install -r requirements.txt
+
+    - name: Check test collection (Show tests discovered)
+      run: |
+        source venv/bin/activate
+        pytest --collect-only -v  # Will list all tests detected
+
+    - name: Run all unit tests
+      run: |
+        source venv/bin/activate
+        pytest tests/ -s -v --disable-warnings
