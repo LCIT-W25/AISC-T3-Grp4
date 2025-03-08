@@ -26,6 +26,7 @@ jobs:
         python -m venv venv
         source venv/bin/activate
         pip install -r requirements.txt
+        pip install pytest  # Ensure pytest is installed
 
     - name: Download models from GitHub Releases
       run: |
@@ -34,4 +35,6 @@ jobs:
         wget -O models/rnn_model.h5 "https://github.com/LCIT-W25/AISC-T3-Grp4/releases/download/vgg_rnn_gru/best_rnn_model.h5"
 
     - name: Run all unit tests
-      run: pytest   --disable-warnings
+      run: |
+        source venv/bin/activate  # Ensure the virtual environment is activated
+        pytest --disable-warnings
