@@ -1,0 +1,8 @@
+
+
+streamlit
+requests
+pillow
+flask  # If the API is built using Flask
+torch  # If using PyTorch models for image classification
+tensorflow  # If using TensorFlow models
