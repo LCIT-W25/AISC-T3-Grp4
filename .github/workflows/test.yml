@@ -26,7 +26,7 @@ jobs:
         python -m venv venv
         source venv/bin/activate
         pip install -r requirements.txt
-        pip install pytest  # Ensure pytest is installed
+        pip install pytest tensorflow  # Ensure pytest and TensorFlow are installed
 
     - name: Download models from GitHub Releases
       run: |
@@ -34,7 +34,14 @@ jobs:
         wget -O models/vgg_model.h5 "https://github.com/LCIT-W25/AISC-T3-Grp4/releases/download/vgg_rnn_gru/VGG16CLASSIFIER.h5"
         wget -O models/rnn_model.h5 "https://github.com/LCIT-W25/AISC-T3-Grp4/releases/download/vgg_rnn_gru/best_rnn_model.h5"
 
+    - name: Verify model downloads
+      run: |
+        if [ ! -f models/gru_model.h5 ]; then echo "GRU model not downloaded"; exit 1; fi
+        if [ ! -f models/vgg_model.h5 ]; then echo "VGG model not downloaded"; exit 1; fi
+        if [ ! -f models/rnn_model.h5 ]; then echo "RNN model not downloaded"; exit 1; fi
+        echo "All models downloaded successfully"
+
     - name: Run all unit tests
       run: |
         source venv/bin/activate  # Ensure the virtual environment is activated
-        pytest --disable-warnings
+        pytest --disable-warnings -v  # Verbose output for better debugging
