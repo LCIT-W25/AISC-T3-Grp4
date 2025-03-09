@@ -21,7 +21,7 @@ jobs:
           pip install -r requirements.txt --index-url=https://pypi.org/simple -v || pip install -r requirements.txt --index-url=https://pypi.org/simple -v
           pip install pytest tensorflow==2.10.0 -v || pip install pytest tensorflow==2.10.0 -v
       
-      - name: Validate Python package names
+      - name: Validate Python package Names
         run: |
           source venv/bin/activate
           python -c "import pkgutil; [print(modname) for importer, modname, ispkg in pkgutil.iter_modules()]"
