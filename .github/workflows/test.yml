@@ -1,35 +1,46 @@
-name: All Model Unit Tests
+name: CI/CD Pipeline for ML Model
 
 on:
   push:
-    branches: [ "main" ]
+    branches:
+      - dev
   pull_request:
-    branches: [ "main" ]
+    branches:
+      - dev
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
-    - name: Set up Python 3.9
-      uses: actions/setup-python@v2
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Set up Python
+      uses: actions/setup-python@v3
       with:
-        python-version: 3.9
+        python-version: '3.x'
+
+    - name: Cache pip dependencies
+      uses: actions/cache@v3
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+        restore-keys: |
+          ${{ runner.os }}-pip-
+
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install pytest tensorflow requests
-    - name: Download Models
-      run: |
-        mkdir -p models
-        wget https://github.com/LCIT-W25/AISC-T3-Grp4/releases/download/vgg_rnn_gru/best_hyperparameter_gru_model.h5 -O models/gru_model.h5
-        wget https://github.com/LCIT-W25/AISC-T3-Grp4/releases/download/vgg_rnn_gru/best_rnn_model.h5 -O models/vgg_model.h5
-        wget https://github.com/LCIT-W25/AISC-T3-Grp4/releases/download/vgg_rnn_gru/VGG16CLASSIFIER.h5 -O models/rnn_model.h5
-    - name: Resave Models
-      run: |
-        python -c "import tensorflow as tf; model_paths = ['models/gru_model.h5', 'models/vgg_model.h5', 'models/rnn_model.h5']; for path in model_paths: try: model = tf.keras.models.load_model(path); model.save(path); print(f'Model resaved successfully: {path}'); except Exception as e: print(f'Error resaving model {path}: {e}')"
+        pip install -r requirements.txt
+
     - name: Run tests
       run: |
-        pytest tests/test_models.py
+        pytest
+
+    - name: Upload test results
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: test-results
+        path: test-results/
