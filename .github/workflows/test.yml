@@ -7,9 +7,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-       
+        
       - name: Set up Python
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v4
         with:
           python-version: 3.9 
       
@@ -20,6 +20,11 @@ jobs:
           python -m pip install --upgrade pip setuptools wheel
           pip install -r requirements.txt --index-url=https://pypi.org/simple -v || pip install -r requirements.txt --index-url=https://pypi.org/simple -v
           pip install pytest tensorflow==2.10.0 -v || pip install pytest tensorflow==2.10.0 -v
+      
+      - name: Validate Python package names
+        run: |
+          source venv/bin/activate
+          python -c "import pkgutil; [print(modname) for importer, modname, ispkg in pkgutil.iter_modules()]"
       
       - name: Run tests
         run: |
