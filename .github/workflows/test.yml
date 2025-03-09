@@ -7,16 +7,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      
+       
       - name: Set up Python
         uses: actions/setup-python@v2
         with:
           python-version: 3.9 
+      
       - name: Install dependencies
         run: |
           python -m venv venv
           source venv/bin/activate
-          python -m pip install --upgrade pip
+          python -m pip install --upgrade pip setuptools wheel
           pip install -r requirements.txt --index-url=https://pypi.org/simple -v || pip install -r requirements.txt --index-url=https://pypi.org/simple -v
           pip install pytest tensorflow==2.10.0 -v || pip install pytest tensorflow==2.10.0 -v
       
