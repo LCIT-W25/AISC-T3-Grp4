@@ -3,7 +3,7 @@ name: SonarQube Analysis
 on:
   push:
     branches:
-      - Test_Deployment_Ass-2  # Ensure this is your branch name
+      - Test_Deployment_Ass-2  # This is your GitHub branch
 
 jobs:
   sonar:
@@ -38,7 +38,8 @@ jobs:
           SONAR_HOST_URL: http://localhost:9000  # Change if using SonarCloud
         run: |
           sonar-scanner \
-            -Dsonar.projectKey=your_project_name \
+            -Dsonar.projectKey=SONAR \
+            -Dsonar.branch.name=main \  # Matches SonarQube branch
             -Dsonar.sources=. \
             -Dsonar.host.url=$SONAR_HOST_URL \
             -Dsonar.login=$SONAR_TOKEN
