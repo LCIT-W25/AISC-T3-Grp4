@@ -14,14 +14,14 @@ jobs:
 
     - name: Install dependencies
       run: |
+        set -e
         python -m venv venv
         source venv/bin/activate
         python -m pip install --upgrade pip  # Upgrade pip to the latest version
-        pip install -r requirements.txt --index-url=https://pypi.org/simple -v || pip install -r requirements.txt --index-url=https://pypi.org/simple -v  # Retry if it fails
-        pip install pytest tensorflow==2.10.0 -v || pip install pytest tensorflow==2.10.0 -v  # Retry if it fails
+        pip install -r requirements.txt --index-url=https://pypi.org/simple -v -H || pip install -r requirements.txt --index-url=https://pypi.org/simple -v -H  # Retry if it fails
+        pip install pytest tensorflow==2.10.0 -v -H || pip install pytest tensorflow==2.10.0 -v -H  # Retry if it fails
       env:
         PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.10.16/x64/lib/pkgconfig
-
     - name: Run tests
       run: |
         source venv/bin/activate
