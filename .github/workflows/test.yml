@@ -1,34 +1,35 @@
 name: All Model Unit Test
 
-on: [push, pull_request]
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
 
 jobs:
-  test:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-        
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: 3.9 
-      
-      - name: Install dependencies
-        run: |
-          python -m venv venv
-          source venv/bin/activate
-          python -m pip install --upgrade pip setuptools wheel
-          pip install -r requirements.txt --index-url=https://pypi.org/simple -v || pip install -r requirements.txt --index-url=https://pypi.org/simple -v
-          pip install pytest tensorflow==2.10.0 -v || pip install pytest tensorflow==2.10.0 -v
-          pip install --upgrade --force-reinstall "numpy<2"
+  build:
 
-      
-      - name: Validate Python package Names
-        run: |
-          source venv/bin/activate
-          python -c "import pkgutil; [print(modname) for importer, modname, ispkg in pkgutil.iter_modules()]"
-      
-      - name: Run tests
-        run: |
-          source venv/bin/activate
-          pytest
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python 3.9
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.9
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install pytest tensorflow requests
+    - name: Download Models
+      run: |
+        mkdir -p models
+        wget https://github.com/LCIT-W25/AISC-T3-Grp4/releases/download/vgg_rnn_gru/best_hyperparameter_gru_model.h5 -O models/gru_model.h5
+        wget https://github.com/LCIT-W25/AISC-T3-Grp4/releases/download/vgg_rnn_gru/best_rnn_model.h5 -O models/vgg_model.h5
+        wget https://github.com/LCIT-W25/AISC-T3-Grp4/releases/download/vgg_rnn_gru/VGG16CLASSIFIER.h5 -O models/rnn_model.h5
+    - name: Resave Models
+      run: |
+        python -c "import tensorflow as tf; model_paths = ['models/gru_model.h5', 'models/vgg_model.h5', 'models/rnn_model.h5']; for path in model_paths: try: model = tf.keras.models.load_model(path); model.save(path); print(f'Model resaved successfully: {path}'); except Exception as e: print(f'Error resaving model {path}: {e}')"
+    - name: Run tests
+      run: |
+        pytest tests/test_models.py
