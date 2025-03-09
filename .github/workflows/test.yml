@@ -20,6 +20,8 @@ jobs:
           python -m pip install --upgrade pip setuptools wheel
           pip install -r requirements.txt --index-url=https://pypi.org/simple -v || pip install -r requirements.txt --index-url=https://pypi.org/simple -v
           pip install pytest tensorflow==2.10.0 -v || pip install pytest tensorflow==2.10.0 -v
+          pip install --upgrade --force-reinstall "numpy<2"
+
       
       - name: Validate Python package Names
         run: |
