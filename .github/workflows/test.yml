@@ -1,4 +1,4 @@
-name: All Model Unit Tests
+name: All Model Unit Test
 
 on: [push, pull_request]
 
