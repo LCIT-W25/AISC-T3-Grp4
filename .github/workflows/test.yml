@@ -1,51 +1,28 @@
 name: All Model Unit Tests
 
-on:
-  push:
-    branches:
-      - dev
-  pull_request:
-    branches:
-      - dev
+on: [push, pull_request]
 
 jobs:
   test:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v4
-
     - name: Set up Python
-      uses: actions/setup-python@v5
+      uses: actions/setup-python@v2
       with:
         python-version: '3.10'
-      
+
     - name: Install dependencies
       run: |
-          python -m venv venv
-          source venv/bin/activate
-          python -m pip install --upgrade pip  # Upgrade pip to the latest version
-          pip install -r requirements.txt --index-url=https://pypi.org/simple -v || pip install -r requirements.txt --index-url=https://pypi.org/simple -v  # Retry if it fails
-          pip install pytest tensorflow==2.10.0 -v || pip install pytest tensorflow==2.10.0 -v  # Retry if it fails
+        python -m venv venv
+        source venv/bin/activate
+        python -m pip install --upgrade pip  # Upgrade pip to the latest version
+        pip install -r requirements.txt --index-url=https://pypi.org/simple -v || pip install -r requirements.txt --index-url=https://pypi.org/simple -v  # Retry if it fails
+        pip install pytest tensorflow==2.10.0 -v || pip install pytest tensorflow==2.10.0 -v  # Retry if it fails
+      env:
+        PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.10.16/x64/lib/pkgconfig
 
-    - name: Ensure models directory exists
-      run: mkdir -p models
-
-    - name: Download models from GitHub releases
+    - name: Run tests
       run: |
-        wget -O models/gru_model.h5 "https://github.com/LCIT-W25/AISC-T3-Grp4/releases/download/vgg_rnn_gru/best_hyperparameter_gru_model.h5"
-        wget -O models/vgg_model.h5 "https://github.com/LCIT-W25/AISC-T3-Grp4/releases/download/vgg_rnn_gru/VGG16CLASSIFIER.h5"
-        wget -O models/rnn_model.h5 "https://github.com/LCIT-W25/AISC-T3-Grp4/releases/download/vgg_rnn_gru/best_rnn_model.h5"
-
-    - name: Verify model downloads
-      run: |
-        if [ ! -f models/gru_model.h5 ]; then echo "GRU model not downloaded"; exit 1; fi
-        if [ ! -f models/vgg_model.h5 ]; then echo "VGG model not downloaded"; exit 1; fi
-        if [ ! -f models/rnn_model.h5 ]; then echo "RNN model not downloaded"; exit 1; fi
-        echo "All models downloaded successfully"
-
-    - name: Run all unit tests
-      run: |
-        source venv/bin/activate  # Ensure the virtual environment is activated
-        pytest --disable-warnings -v  # Verbose output for better debugging
+        source venv/bin/activate
+        pytest
