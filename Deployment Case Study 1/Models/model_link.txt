@@ -1,0 +1,1 @@
+Link to VGG16CLASSIFIER Model: https://drive.google.com/file/d/1fiA4OJrg2dNTEP89whzxF2Sg_IjAYz83/view?usp=drive_link
